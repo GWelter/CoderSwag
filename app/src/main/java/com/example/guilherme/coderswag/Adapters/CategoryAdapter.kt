@@ -10,7 +10,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.example.guilherme.coderswag.Model.Category
 import com.example.guilherme.coderswag.R
-import java.util.zip.Inflater
 
 /**
  * Created by guilherme on 29/10/17.
@@ -22,18 +21,26 @@ class CategoryAdapter(context: Context, categories: List<Category>) : BaseAdapte
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val categoryView: View
-        categoryView = LayoutInflater.from(context).inflate(R.layout.category_list_item, null)
+        val holder: ViewHolder
 
-        val categoryImage: ImageView = categoryView.findViewById(R.id.category_image)
-        val categoryName: TextView = categoryView.findViewById(R.id.category_name)
-        Log.d("Debuging", "heavy computing")
+        if(convertView == null){
+            categoryView = LayoutInflater.from(context).inflate(R.layout.category_list_item, null)
+
+            holder = ViewHolder()
+            holder.categoryImageView = categoryView.findViewById(R.id.category_image)
+            holder.categoryName = categoryView.findViewById(R.id.category_name)
+            categoryView.tag = holder
+            Log.d("Debuging", "heavy computing")
+        }else{
+            holder = convertView.tag as ViewHolder
+            categoryView = convertView
+        }
 
         val category = categories[position]
-
-        categoryName.text = category.title
-
         val imageResourceId = context.resources.getIdentifier(category.image, "drawable", context.packageName)
-        categoryImage.setImageResource(imageResourceId)
+
+        holder.categoryName?.text = category.title
+        holder.categoryImageView?.setImageResource(imageResourceId)
 
         return categoryView
     }
@@ -48,5 +55,10 @@ class CategoryAdapter(context: Context, categories: List<Category>) : BaseAdapte
 
     override fun getCount(): Int {
         return categories.count()
+    }
+
+    private class ViewHolder() {
+        var categoryImageView: ImageView? = null
+        var categoryName: TextView? = null
     }
 }
