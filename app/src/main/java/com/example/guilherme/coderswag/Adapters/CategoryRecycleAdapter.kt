@@ -13,7 +13,7 @@ import com.example.guilherme.coderswag.R
 /**
  * Created by guilhermewelter on 30/10/17.
  */
-class CategoryRecycleAdapter (val context: Context, val categories: List<Category>) : RecyclerView.Adapter<CategoryRecycleAdapter.Holder>() {
+class CategoryRecycleAdapter (val context: Context, val categories: List<Category>, val itemClick: (Category) -> Unit) : RecyclerView.Adapter<CategoryRecycleAdapter.Holder>() {
 
     override fun getItemCount(): Int {
         return categories.count()
@@ -25,10 +25,10 @@ class CategoryRecycleAdapter (val context: Context, val categories: List<Categor
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): Holder {
         val view = LayoutInflater.from(context).inflate(R.layout.category_list_item, parent, false) as View
-        return Holder(view)
+        return Holder(view, itemClick)
     }
 
-    inner class Holder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
+    inner class Holder(itemView: View?, val itemClick: (Category) -> Unit) : RecyclerView.ViewHolder(itemView) {
         val categoryImage = itemView?.findViewById<ImageView>(R.id.category_image)
         val categoryName = itemView?.findViewById<TextView>(R.id.category_name)
 
@@ -37,6 +37,8 @@ class CategoryRecycleAdapter (val context: Context, val categories: List<Categor
 
             categoryImage?.setImageResource(resourceID)
             categoryName?.text = category.title
+
+            itemView.setOnClickListener { itemClick(category) }
         }
     }
 }
